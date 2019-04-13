@@ -23,7 +23,7 @@
     </developers>
 
     <modules>
-        <module>hw01-maven</module>
+        
     </modules>
 
     <properties>

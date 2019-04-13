@@ -1,16 +1,23 @@
 package ru.otus.hw011;
 
-import java.util.List;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 
-import com.google.common.collect.Lists;
+import java.nio.charset.Charset;
 
 public class Main {
 
     public static void main(String[] args) {
-        List<String> nameList = List.of("John", "Mary", "Dom");
-        String names = String.join(", ", nameList);
+        String hashed = args[0];
 
-        Lists.reverse(nameList);
+        HashFunction hashFunction = Hashing.sha256();
+        HashCode hash = hashFunction.newHasher()
+                .putString(hashed, Charset.forName("UTF-8"))
+                .hash();
+
+        System.out.println(hashed + " -> sha256: " + hash);
+
     }
 
 }

@@ -23,6 +23,7 @@
     </developers>
 
     <modules>
+        <module>hw01-maven</module>
         <module>hw21-diy-arraylist</module>
     </modules>
 

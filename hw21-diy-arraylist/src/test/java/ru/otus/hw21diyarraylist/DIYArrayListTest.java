@@ -26,13 +26,13 @@ public class DIYArrayListTest {
     }
 
     /**
-     * Проверяем метод {@link List#addAll(Collection)}
+     * Проверяем метод {@link Collections#addAll(Collection, Object[])}
      */
     @Test
     public void addAll() {
-        boolean b = testCollection.addAll(stringArrays);
-
-        assertTrue(b);
+        String[] s = new String[stringArrays.size()];
+        stringArrays.toArray(s);
+        Collections.addAll(testCollection, s);
         assertEquals(testCollection.size(), stringArrays.size());
         for (int i = 0; i < stringArrays.size(); i++) {
             assertEquals(stringArrays.get(i), testCollection.get(i));

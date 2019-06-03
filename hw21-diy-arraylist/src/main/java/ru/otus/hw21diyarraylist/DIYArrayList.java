@@ -55,7 +55,12 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public boolean add(T t) {
-        throw new UnsupportedOperationException();
+        if (data.length >= size) {
+            grow(size + 1);
+        }
+        data[size] = t;
+        size = size + 1;
+        return true;
     }
 
     @Override
@@ -70,16 +75,16 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        Object[] add = c.toArray();
-        final int l = add.length;
-        if (l == 0) return false;
-        Object[] data;
-        final int s;
-        if (l > (data = this.data).length - (s = size)) {
-            data = grow(l + s);
+        Object[] addArray = c.toArray();
+        final int addArraySize = addArray.length;
+        if (addArraySize == 0) return false;
+        Object[] data = this.data;
+        final int currentSize = size;
+        if (addArraySize > data.length - currentSize) {
+            data = grow(addArraySize + currentSize);
         }
-        System.arraycopy(add, 0, data, s, l);
-        size = s + l;
+        System.arraycopy(addArray, 0, data, currentSize, addArraySize);
+        size = currentSize + addArraySize;
         return true;
     }
 
@@ -103,11 +108,10 @@ public class DIYArrayList<T> implements List<T> {
         throw new UnsupportedOperationException();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T get(int index) {
         Objects.checkIndex(index, size);
-        return (T) data[index];
+        return elementData(index);
     }
 
     @Override

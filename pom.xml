@@ -25,6 +25,7 @@
     <modules>
         <module>hw01-maven</module>
         <module>hw21-diy-arraylist</module>
+        <module>hw3-test-fraemwork</module>
     </modules>
 
     <properties>
@@ -37,6 +38,7 @@
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>2.22.0</maven-failsafe-plugin.version>
+        <lombok.version>1.18.8</lombok.version>
     </properties>
 
     <dependencyManagement>
@@ -50,6 +52,12 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>${commons-collections4.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>

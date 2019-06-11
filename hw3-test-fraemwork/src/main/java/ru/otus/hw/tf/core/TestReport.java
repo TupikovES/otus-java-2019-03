@@ -1,4 +1,4 @@
-package ru.otus.hw.tf;
+package ru.otus.hw.tf.core;
 
 import lombok.Getter;
 import lombok.Setter;

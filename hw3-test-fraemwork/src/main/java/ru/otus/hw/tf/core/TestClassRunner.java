@@ -1,11 +1,6 @@
-package ru.otus.hw.tf;
+package ru.otus.hw.tf.core;
 
 import lombok.SneakyThrows;
-import ru.otus.hw.tf.annotation.BeforeEach;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 
 public class TestClassRunner {
 

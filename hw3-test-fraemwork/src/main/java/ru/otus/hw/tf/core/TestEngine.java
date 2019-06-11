@@ -1,4 +1,4 @@
-package ru.otus.hw.tf;
+package ru.otus.hw.tf.core;
 
 import lombok.SneakyThrows;
 import ru.otus.hw.tf.annotation.*;
@@ -16,6 +16,7 @@ public class TestEngine {
     private final ArrayList<Method> methodsAfterAll = new ArrayList<>();
     private final ArrayList<Method> methodsTest = new ArrayList<>();
     private TestReport report;
+    private boolean failure;
 
     private final Class<?> testClass;
 
@@ -26,23 +27,26 @@ public class TestEngine {
 
     @SneakyThrows
     public void run(TestReport report) {
+        failure = false;
         this.report = report;
         report.init(testClass, methodsTest.size());
-        methodRunner(methodsBeforeAll, null);
-        for (Method method : methodsTest) {
-            Object obj = testClass.getDeclaredConstructor().newInstance();
-            try {
-                methodRunner(methodsBeforeEach, obj);
-                runTest(method, obj);
-            } catch (InvocationTargetException e) {
-                e.getTargetException().printStackTrace();
-                break;
-            } finally {
-                methodRunner(methodsAfterEach, obj);
+        try {
+            runMethods(methodsBeforeAll, null);
+            for (Method method : methodsTest) {
+                Object obj = testClass.getDeclaredConstructor().newInstance();
+                runBeforeAndTestAndAfterTest(method, obj);
+                if (isFailure()) {
+                    break;
+                }
             }
+        } catch (InvocationTargetException e) {
+            e.getTargetException().printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } finally {
+            runMethods(methodsAfterAll, null);
+            report.complete();
         }
-        methodRunner(methodsAfterAll, null);
-        report.complete();
     }
 
     private void runTest(Method method, Object obj) {
@@ -58,7 +62,19 @@ public class TestEngine {
         }
     }
 
-    private void methodRunner(List<Method> methods, Object obj) throws InvocationTargetException, IllegalAccessException {
+    private void runBeforeAndTestAndAfterTest(Method method, Object obj) throws IllegalAccessException, InvocationTargetException {
+        try {
+            runMethods(methodsBeforeEach, obj);
+            runTest(method, obj);
+        } catch (InvocationTargetException e) {
+            e.getTargetException().printStackTrace();
+            failure = true;
+        } finally {
+            runMethods(methodsAfterEach, obj);
+        }
+    }
+
+    private void runMethods(List<Method> methods, Object obj) throws InvocationTargetException, IllegalAccessException {
         for (Method method : methods) {
             method.invoke(obj);
         }
@@ -91,5 +107,9 @@ public class TestEngine {
         if (method.isAnnotationPresent(Test.class)) {
             methodsTest.add(method);
         }
+    }
+
+    private boolean isFailure() {
+        return failure;
     }
 }

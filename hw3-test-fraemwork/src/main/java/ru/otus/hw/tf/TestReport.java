@@ -3,9 +3,6 @@ package ru.otus.hw.tf;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Getter
 @Setter
 public class TestReport {
@@ -14,7 +11,6 @@ public class TestReport {
     private int testSkipped;
     private int testError;
     private AllTestReport allTestReport;
-    private Map<String, String> exceptionsByMethod = new HashMap<>();
 
     public TestReport() {
         this.allTestReport = new AllTestReport();

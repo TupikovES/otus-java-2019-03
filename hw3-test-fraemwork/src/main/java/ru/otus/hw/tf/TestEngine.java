@@ -6,6 +6,7 @@ import ru.otus.hw.tf.annotation.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TestEngine {
 
@@ -14,6 +15,7 @@ public class TestEngine {
     private final ArrayList<Method> methodsBeforeAll = new ArrayList<>();
     private final ArrayList<Method> methodsAfterAll = new ArrayList<>();
     private final ArrayList<Method> methodsTest = new ArrayList<>();
+    private TestReport report;
 
     private final Class<?> testClass;
 
@@ -23,45 +25,42 @@ public class TestEngine {
     }
 
     @SneakyThrows
-    public void run() {
-        runBeforeAll();
+    public void run(TestReport report) {
+        this.report = report;
+        report.init(testClass, methodsTest.size());
+        methodRunner(methodsBeforeAll, null);
         for (Method method : methodsTest) {
             Object obj = testClass.getDeclaredConstructor().newInstance();
-            runBeforeEach(obj);
             try {
-                method.invoke(obj);
+                methodRunner(methodsBeforeEach, obj);
+                runTest(method, obj);
             } catch (InvocationTargetException e) {
-                Throwable throwable = e.getTargetException();
-                System.out.println("Test '" + method.getName() +
-                        "' with exception: " + throwable.getClass().getName() +
-                        ", msg: " + throwable.getMessage());
+                e.getTargetException().printStackTrace();
+                break;
+            } finally {
+                methodRunner(methodsAfterEach, obj);
             }
-            runAfterEach(obj);
         }
-        runAfterAll();
+        methodRunner(methodsAfterAll, null);
+        report.complete();
     }
 
-    private void runBeforeEach(Object obj) throws InvocationTargetException, IllegalAccessException {
-        for (Method beforeEach : methodsBeforeEach) {
-            beforeEach.invoke(obj);
-        }
-    }
-
-    private void runAfterEach(Object obj) throws InvocationTargetException, IllegalAccessException {
-        for (Method afterEach : methodsAfterEach) {
-            afterEach.invoke(obj);
-        }
-    }
-
-    private void runBeforeAll() throws InvocationTargetException, IllegalAccessException {
-        for (Method beforeAll : methodsBeforeAll) {
-            beforeAll.invoke(null);
+    private void runTest(Method method, Object obj) {
+        try {
+            method.invoke(obj);
+            report.incrementRunTest();
+        } catch (InvocationTargetException e) {
+            report.incrementError();
+            e.getTargetException().printStackTrace();
+        } catch (IllegalAccessException e) {
+            report.incrementError();
+            e.printStackTrace();
         }
     }
 
-    private void runAfterAll() throws InvocationTargetException, IllegalAccessException {
-        for (Method afterAll : methodsAfterAll) {
-            afterAll.invoke(null);
+    private void methodRunner(List<Method> methods, Object obj) throws InvocationTargetException, IllegalAccessException {
+        for (Method method : methods) {
+            method.invoke(obj);
         }
     }
 

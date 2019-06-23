@@ -26,6 +26,7 @@
         <module>hw01-maven</module>
         <module>hw21-diy-arraylist</module>
         <module>hw3-test-fraemwork</module>
+        <module>hw4-log-method</module>
     </modules>
 
     <properties>
@@ -39,6 +40,9 @@
         <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>2.22.0</maven-failsafe-plugin.version>
         <lombok.version>1.18.8</lombok.version>
+        <aspectj.version>1.9.4</aspectj.version>
+        <aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
+        <cglib.version>3.2.12</cglib.version>
     </properties>
 
     <dependencyManagement>
@@ -58,6 +62,11 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>${cglib.version}</version>
             </dependency>
 
             <dependency>

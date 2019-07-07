@@ -27,6 +27,7 @@
         <module>hw21-diy-arraylist</module>
         <module>hw3-test-fraemwork</module>
         <module>hw4-log-method</module>
+        <module>hw6-atm</module>
     </modules>
 
     <properties>

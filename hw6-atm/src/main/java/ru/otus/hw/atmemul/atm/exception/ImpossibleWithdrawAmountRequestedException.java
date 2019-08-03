@@ -1,4 +1,4 @@
-package ru.otus.hw.atmemul.atm;
+package ru.otus.hw.atmemul.atm.exception;
 
 public class ImpossibleWithdrawAmountRequestedException extends Exception {
 

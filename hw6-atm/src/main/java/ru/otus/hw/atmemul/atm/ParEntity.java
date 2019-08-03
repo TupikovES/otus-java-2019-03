@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Некий Pojo для удобства
+ * Некий Pojo для удобства.
+ * Он описывает количество банкнот определенным номиналом
  */
 @AllArgsConstructor
 @Getter

@@ -1,5 +1,7 @@
 package ru.otus.hw.atmemul.atm;
 
+import ru.otus.hw.atmemul.department.operation.Operation;
+
 import java.util.List;
 
 public interface ATM {
@@ -9,6 +11,11 @@ public interface ATM {
      * @return uuid
      */
     String getAtmUuid();
+
+    /**
+     * Сумма остатка денежных средств ATM
+     */
+    int total();
 
     /**
      * Внести средства.
@@ -29,4 +36,15 @@ public interface ATM {
      * Вывести отчет о состояниии банкомата
      */
     void printReport();
+
+    /**
+     * Востановить состояние {@link ATM}
+     */
+    void recovery();
+
+    /**
+     * Выполнить операцию
+     * @param operation {@link Operation}
+     */
+    void perform(Operation operation);
 }

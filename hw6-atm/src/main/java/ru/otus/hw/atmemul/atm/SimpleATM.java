@@ -1,6 +1,9 @@
 package ru.otus.hw.atmemul.atm;
 
 import lombok.Getter;
+import ru.otus.hw.atmemul.atm.exception.IllegalParException;
+import ru.otus.hw.atmemul.atm.exception.ImpossibleWithdrawAmountRequestedException;
+import ru.otus.hw.atmemul.department.operation.Operation;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,15 +15,18 @@ public class SimpleATM implements ATM {
     @Getter
     private String atmUuid;
     private EnumMap<Par, Integer> parCount = new EnumMap<>(Par.class);
+    private Memento memento;
 
-    public SimpleATM() {
+    public SimpleATM(EnumMap<Par, Integer> parCount) {
         atmUuid = UUID.randomUUID().toString();
         System.out.println("Init ATM #" + atmUuid);
-        parCount.put(Par.RUR_50, 100);
-        parCount.put(Par.RUR_100, 100);
-        parCount.put(Par.RUR_500, 50);
-        parCount.put(Par.RUR_1000, 10);
-        parCount.put(Par.RUR_5000, 5);
+        parCount.forEach((par, count) -> this.parCount.put(par, count));
+        saveState(parCount);
+    }
+
+    private void saveState(EnumMap<Par, Integer> parCount) {
+        memento = new Memento();
+        memento.save(parCount);
     }
 
     @Override
@@ -111,12 +117,24 @@ public class SimpleATM implements ATM {
         System.out.println("Total: " + total());
     }
 
-    private int total() {
+    public int total() {
         AtomicReference<Integer> total = new AtomicReference<>(0);
         parCount.forEach((par, count) -> {
             int parCount = par.getValue() * count;
             total.updateAndGet(v -> v + parCount);
         });
         return total.get();
+    }
+
+    @Override
+    public void recovery() {
+        EnumMap<Par, Integer> state = memento.getState();
+        parCount.clear();
+        state.forEach((par, count) -> parCount.put(par, count));
+    }
+
+    @Override
+    public void perform(Operation operation) {
+        operation.perform(this);
     }
 }

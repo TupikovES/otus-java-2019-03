@@ -1,4 +1,6 @@
-package ru.otus.hw.atmemul.atm;
+package ru.otus.hw.atmemul.atm.exception;
+
+import ru.otus.hw.atmemul.atm.Par;
 
 public class IllegalParException extends Exception {
 

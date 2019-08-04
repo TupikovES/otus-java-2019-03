@@ -13,7 +13,12 @@ public class JsonObjectMapper implements ObjectMapper {
     @Override
     public String writeValueAsString(Object obj) throws IllegalAccessException {
         if (Objects.isNull(obj)) {
-            throw new NullPointerException();
+            return null;
+        }
+
+        JsonValue value = createJsonValue(obj.getClass(), obj);
+        if (value != null) {
+            return value.toString();
         }
 
         JsonObject parse = parse(obj);
@@ -28,8 +33,9 @@ public class JsonObjectMapper implements ObjectMapper {
         for (Field field : fields) {
             field.setAccessible(true);
             int modifiers = field.getModifiers();
-            if (isNotStaticOrTransient(modifiers)) {
-                builder.add(field.getName(), createJsonValue(field.getType(), field.get(obj)));
+            Object o = field.get(obj);
+            if (o != null && isNotStaticOrTransient(modifiers)) {
+                builder.add(field.getName(), createJsonValue(field.getType(), o));
             }
         }
 
@@ -39,7 +45,9 @@ public class JsonObjectMapper implements ObjectMapper {
     private JsonValue createJsonValue(Class<?> type, Object obj) {
         boolean isNull = Objects.isNull(obj);
 
-        if (type.isArray()) {
+        if (isPrimitiveValue(type)) {
+            return createPrimitiveValue(obj);
+        } else if (type.isArray()) {
             return isNull ? JsonArray.EMPTY_JSON_ARRAY : createArrayValue(obj);
         } else if (Collection.class.isAssignableFrom(type)) {
             Collection<?> collection = (Collection<?>) obj;
@@ -48,8 +56,16 @@ public class JsonObjectMapper implements ObjectMapper {
             return isNull ? JsonValue.EMPTY_JSON_OBJECT : createMapValue(obj);
         }
 
-        return createPrimitiveValue(obj);
+        return null;
 
+    }
+
+    private boolean isPrimitiveValue(Class<?> type) {
+        return type.isPrimitive() ||
+                Number.class.isAssignableFrom(type) ||
+                String.class.isAssignableFrom(type) ||
+                Boolean.class.isAssignableFrom(type) ||
+                Character.class.isAssignableFrom(type);
     }
 
     private JsonValue createMapValue(Object obj) {

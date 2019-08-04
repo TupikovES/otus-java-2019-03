@@ -18,5 +18,6 @@ class TestObject {
     private Boolean aBoolean;
     private Map<String, Double> stringDoubleMap;
     private Map<String, List<String>> stringListMap;
+    private String ns = null;
 
 }

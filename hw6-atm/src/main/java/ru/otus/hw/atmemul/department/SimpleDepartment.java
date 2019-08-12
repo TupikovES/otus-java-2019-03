@@ -1,5 +1,6 @@
 package ru.otus.hw.atmemul.department;
 
+import lombok.Getter;
 import ru.otus.hw.atmemul.atm.ATM;
 import ru.otus.hw.atmemul.department.operation.Operation;
 import ru.otus.hw.atmemul.department.operation.PrintReportOperation;
@@ -10,6 +11,7 @@ import java.util.Map;
 
 public class SimpleDepartment implements Department {
 
+    @Getter
     private Map<String, ATM> atmList;
 
     public SimpleDepartment() {

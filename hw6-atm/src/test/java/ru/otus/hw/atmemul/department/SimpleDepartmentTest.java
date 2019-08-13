@@ -66,5 +66,9 @@ class SimpleDepartmentTest {
 
     @Test
     void totalSum() {
+        department.addAtm(atm_1);
+        department.addAtm(atm_2);
+        long totalAll = atm_1.total() + atm_2.total();
+        assertEquals(department.totalSum(), totalAll);
     }
 }

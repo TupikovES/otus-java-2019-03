@@ -17,20 +17,32 @@ public class H2ConnectionManager implements ConnectionManager {
     public H2ConnectionManager() throws SQLException, ClassNotFoundException {
         log.info("info");
         Class.forName("org.h2.Driver");
-        initConnection = createTable();
+        initConnection = DriverManager.getConnection(DB_URL);
+        initConnection.setAutoCommit(false);
+        createPersonTable();
+        createAccountTable();
     }
 
-    private Connection createTable() throws SQLException {
-        Connection connection = DriverManager.getConnection(DB_URL);
-        connection.setAutoCommit(false);
-        PreparedStatement ps = connection.prepareStatement(
+    private void createPersonTable() throws SQLException {
+        PreparedStatement ps = initConnection.prepareStatement(
                 "create table Person (" +
                         "id identity not null primary key," +
-                        "username varchar not null" +
+                        "username varchar(255), " +
+                        "age int(3) " +
+                ")"
+        );
+        ps.execute();
+    }
+
+    private void createAccountTable() throws SQLException {
+        PreparedStatement ps = initConnection.prepareStatement(
+                "create table Account (" +
+                        "id identity not null primary key," +
+                        "type varchar(255), " +
+                        "rest number " +
                         ")"
         );
         ps.execute();
-        return connection;
     }
 
     @Override

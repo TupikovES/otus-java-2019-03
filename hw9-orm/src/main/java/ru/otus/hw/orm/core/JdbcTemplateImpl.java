@@ -82,7 +82,7 @@ public class JdbcTemplateImpl implements JdbcTemplate {
             if (Objects.isNull(id)) {
                 throw new NullPointerException("id is null");
             }
-            Object updatable = getIfExist(clazz, id);
+            checkExist(clazz, id);
             StringBuilder setParams = new StringBuilder();
             for (int i = 0; i < fields.length; i++) {
                 fields[i].setAccessible(true);
@@ -105,17 +105,31 @@ public class JdbcTemplateImpl implements JdbcTemplate {
 
     }
 
-    private <T> T getIfExist(Class<T> clazz, Object id) throws IllegalEntityException {
+    private <T> void checkExist(Class<T> clazz, Object id) throws IllegalEntityException {
         Optional<T> updatable = findById(id, clazz);
         if (updatable.isEmpty()) {
             throw new IllegalEntityException("Entity not found");
         }
-        return updatable.get();
     }
 
     @Override
     public <T> void createOrUpdate(T entity) {
-
+        try {
+            Class<?> clazz = entity.getClass();
+            String tableName = clazz.getSimpleName();
+            Field[] fields = clazz.getDeclaredFields();
+            Field idField = getIdField(fields);
+            idField.setAccessible(true);
+            Object id = idField.get(entity);
+            if (Objects.isNull(id)) {
+                create(entity);
+            } else {
+                checkExist(clazz, id);
+                update(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

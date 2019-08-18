@@ -4,15 +4,12 @@ import ru.otus.hw.orm.exception.IllegalEntityException;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class JdbcTemplateImpl implements JdbcTemplate {
 
     private static String insert = "insert into %s (%s) values (%s)";
-    private static String update = "update %s set %s where %s=%s";
+    private static String update = "update %s set %s where %s=?";
     private static String selectById = "select * from %s where %s=?";
 
     private DbExecutor executor;
@@ -75,7 +72,45 @@ public class JdbcTemplateImpl implements JdbcTemplate {
 
     @Override
     public <T> void update(T entity) {
+        try {
+            Class<?> clazz = entity.getClass();
+            String tableName = clazz.getSimpleName();
+            Field[] fields = clazz.getDeclaredFields();
+            Field idField = getIdField(fields);
+            idField.setAccessible(true);
+            Object id = idField.get(entity);
+            if (Objects.isNull(id)) {
+                throw new NullPointerException("id is null");
+            }
+            Object updatable = getIfExist(clazz, id);
+            StringBuilder setParams = new StringBuilder();
+            for (int i = 0; i < fields.length; i++) {
+                fields[i].setAccessible(true);
+                if (!fields[i].equals(idField)) {
+                    if (i < fields.length - 1) {
+                        setParams.append(fields[i].getName()).append("='").append(fields[i].get(entity)).append("', ");
+                    } else {
+                        setParams.append(fields[i].getName()).append("='").append(fields[i].get(entity)).append("' ");
+                    }
+                }
+                fields[i].setAccessible(false);
+            }
+            String sql = String.format(update, tableName, setParams.toString(), idField.getName());
+            System.out.println(sql);
+            executor.update(sql, Collections.singletonList(id));
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private <T> T getIfExist(Class<T> clazz, Object id) throws IllegalEntityException {
+        Optional<T> updatable = findById(id, clazz);
+        if (updatable.isEmpty()) {
+            throw new IllegalEntityException("Entity not found");
+        }
+        return updatable.get();
     }
 
     @Override

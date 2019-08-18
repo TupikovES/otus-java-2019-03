@@ -22,15 +22,24 @@ public class Main {
                         .age(24)
                         .build()
         );
+        Optional<Person> person = jdbcTemplate.findById(1L, Person.class);
+        person.ifPresent(System.out::println);
+        jdbcTemplate.update(
+                Person.builder()
+                        .id(1L)
+                        .username("test_update")
+                        .age(24)
+                        .build()
+        );
         jdbcTemplate.create(
                 Account.builder()
                         .type("user_acc")
                         .rest(new BigDecimal(2))
                         .build()
         );
-        Optional<Person> person = jdbcTemplate.findById(1L, Person.class);
+        Optional<Person> person2 = jdbcTemplate.findById(1L, Person.class);
         Optional<Account> account = jdbcTemplate.findById(1L, Account.class);
-        person.ifPresent(System.out::println);
+        person2.ifPresent(System.out::println);
         account.ifPresent(System.out::println);
         connectionManager.close();
     }

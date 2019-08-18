@@ -40,6 +40,24 @@ public class DbExecutorImpl implements DbExecutor {
     }
 
     @Override
+    public void update(String sql, List<Object> param) throws SQLException {
+        try (Connection connection = connectionManager.getConnection()) {
+            Savepoint preInsertSavepoint = connection.setSavepoint();
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                for (int i = 0; i < param.size(); i++) {
+                    ps.setObject(i + 1, param.get(i));
+                }
+                ps.executeUpdate();
+                connection.commit();
+            } catch (Exception e) {
+                System.out.println("update error");
+                e.printStackTrace();
+                connection.rollback(preInsertSavepoint);
+            }
+        }
+    }
+
+    @Override
     public <T> List<T> select(String sql, List<Object> param, RowMapper<T> rowMapper) throws SQLException {
         try (Connection connection = connectionManager.getConnection()) {
             try (PreparedStatement ps = connection.prepareStatement(sql)) {

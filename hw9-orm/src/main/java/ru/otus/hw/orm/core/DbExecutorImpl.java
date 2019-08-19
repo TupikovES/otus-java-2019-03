@@ -20,9 +20,7 @@ public class DbExecutorImpl implements DbExecutor {
         try (Connection connection = connectionManager.getConnection()) {
             Savepoint preInsertSavepoint = connection.setSavepoint();
             try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                for (int i = 0; i < param.size(); i++) {
-                    ps.setObject(i + 1, param.get(i));
-                }
+                fillParamsOfPreparedStatement(param, ps);
                 ps.executeUpdate();
                 connection.commit();
                 try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -44,9 +42,7 @@ public class DbExecutorImpl implements DbExecutor {
         try (Connection connection = connectionManager.getConnection()) {
             Savepoint preInsertSavepoint = connection.setSavepoint();
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                for (int i = 0; i < param.size(); i++) {
-                    ps.setObject(i + 1, param.get(i));
-                }
+                fillParamsOfPreparedStatement(param, ps);
                 ps.executeUpdate();
                 connection.commit();
             } catch (Exception e) {
@@ -61,9 +57,7 @@ public class DbExecutorImpl implements DbExecutor {
     public <T> List<T> select(String sql, List<Object> param, RowMapper<T> rowMapper) throws SQLException {
         try (Connection connection = connectionManager.getConnection()) {
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                for (int i = 0; i < param.size(); i++) {
-                    ps.setObject(i + 1, param.get(i));
-                }
+                fillParamsOfPreparedStatement(param, ps);
                 ps.execute();
                 try (ResultSet rs = ps.getResultSet()) {
                     List<T> results = new ArrayList<>();
@@ -76,5 +70,9 @@ public class DbExecutorImpl implements DbExecutor {
         }
     }
 
-
+    private void fillParamsOfPreparedStatement(List<Object> param, PreparedStatement ps) throws SQLException {
+        for (int i = 0; i < param.size(); i++) {
+            ps.setObject(i + 1, param.get(i));
+        }
+    }
 }

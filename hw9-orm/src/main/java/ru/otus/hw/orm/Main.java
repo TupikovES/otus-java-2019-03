@@ -4,6 +4,7 @@ import ru.otus.hw.orm.core.DbExecutorImpl;
 import ru.otus.hw.orm.core.H2ConnectionManager;
 import ru.otus.hw.orm.core.JdbcTemplate;
 import ru.otus.hw.orm.core.JdbcTemplateImpl;
+import ru.otus.hw.orm.core.context.Context;
 import ru.otus.hw.orm.entity.Account;
 import ru.otus.hw.orm.entity.Person;
 
@@ -13,6 +14,11 @@ import java.util.Optional;
 public class Main {
 
     public static void main(String[] args) throws Exception {
+
+        Context context = Context.getInstance();
+        context.addEntity(Account.class);
+        context.addEntity(Person.class);
+
         H2ConnectionManager connectionManager = new H2ConnectionManager();
         DbExecutorImpl executor = new DbExecutorImpl(connectionManager);
         JdbcTemplate jdbcTemplate = new JdbcTemplateImpl(executor);

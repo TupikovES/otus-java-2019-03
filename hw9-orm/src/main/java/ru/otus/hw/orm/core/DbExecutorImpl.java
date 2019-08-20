@@ -1,10 +1,7 @@
 package ru.otus.hw.orm.core;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public class DbExecutorImpl implements DbExecutor {
@@ -65,6 +62,19 @@ public class DbExecutorImpl implements DbExecutor {
                         results.add(rowMapper.rowMap(rs));
                     }
                     return results;
+                }
+            }
+        }
+    }
+
+    @Override
+    public <T> boolean isExist(String sql, List<Object> param, RowMapper<T> rowMapper) throws SQLException {
+        try (Connection connection = connectionManager.getConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                fillParamsOfPreparedStatement(param, ps);
+                ps.execute();
+                try (ResultSet rs = ps.getResultSet()) {
+                    return Objects.nonNull(rowMapper.rowMap(rs));
                 }
             }
         }

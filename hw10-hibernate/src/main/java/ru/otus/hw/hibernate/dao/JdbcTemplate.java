@@ -1,10 +1,18 @@
-package ru.otus.hw.orm.core;
+package ru.otus.hw.hibernate.dao;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 public interface JdbcTemplate {
-    <T> void create(T entity);
-    <T> void update(T entity);
+
+    @Transactional
+    void create(Object entity);
+
+    @Transactional
+    <T> T update(T entity);
+
+    @Transactional
     <T> void createOrUpdate(T entity);
-    <T, ID> Optional<T> findById(ID id, Class<T> clazz);
+
+    <T> Optional<T> findById(Object id, Class<T> clazz);
 }

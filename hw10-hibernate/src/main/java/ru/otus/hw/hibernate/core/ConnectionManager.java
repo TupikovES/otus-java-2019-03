@@ -1,8 +1,7 @@
-package ru.otus.hw.orm.core;
+package ru.otus.hw.hibernate.core;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
 
 public interface ConnectionManager {
-    Connection getConnection() throws SQLException;
+    EntityManager getEntityManager();
 }

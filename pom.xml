@@ -29,6 +29,7 @@
         <module>hw4-log-method</module>
         <module>hw6-atm</module>
         <module>hw8-object-writer</module>
+        <module>hw9-orm</module>
     </modules>
 
     <properties>
@@ -47,6 +48,9 @@
         <cglib.version>3.2.12</cglib.version>
         <javax.json-api.version>1.1.4</javax.json-api.version>
         <javax.json.version>1.1.4</javax.json.version>
+        <h2.version>1.4.199</h2.version>
+        <slf4j-api.version>1.8.0-beta2</slf4j-api.version>
+        <logback.version>1.2.3</logback.version>
     </properties>
 
     <dependencyManagement>
@@ -86,6 +90,28 @@
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>2.8.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+
+            <!-- Logger -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
             </dependency>
 
             <dependency>

@@ -30,6 +30,7 @@
         <module>hw6-atm</module>
         <module>hw8-object-writer</module>
         <module>hw9-orm</module>
+        <module>hw10-hibernate</module>
     </modules>
 
     <properties>

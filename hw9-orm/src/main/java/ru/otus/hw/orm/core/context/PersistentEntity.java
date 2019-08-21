@@ -15,7 +15,7 @@ public class PersistentEntity {
     private static String SQL_INSERT_QUERY = "insert into %s (%s) values (%s)";
     private static String SQL_UPDATE_QUERY = "update %s set %s where %s=?";
     private static String SQL_SELECT_BY_ID_QUERY = "select * from %s where %s=?";
-    private static String SQL_IF_EXIST = "select * from %s where %s=?";
+    private static String SQL_IF_EXIST = "select %s from %s where %s=?";
 
     private Class<?> entityClass;
     private String entityName;

@@ -2,15 +2,15 @@ package ru.otus.hw.orm.core;
 
 import ru.otus.hw.orm.core.context.Context;
 import ru.otus.hw.orm.core.context.PersistentEntity;
-import ru.otus.hw.orm.exception.IllegalEntityException;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class JdbcTemplateImpl implements JdbcTemplate {
-
-    private static String exist = "select %s from %s where %s=?";
 
     private DbExecutor executor;
     private Context context;

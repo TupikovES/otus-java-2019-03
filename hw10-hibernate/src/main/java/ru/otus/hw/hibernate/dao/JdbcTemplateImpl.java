@@ -3,6 +3,7 @@ package ru.otus.hw.hibernate.dao;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.util.Optional;
 
 public class JdbcTemplateImpl implements JdbcTemplate {
@@ -15,17 +16,40 @@ public class JdbcTemplateImpl implements JdbcTemplate {
 
     @Override
     public void create(Object entity) {
-        entityManager.persist(entity);
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        try {
+            entityManager.persist(entity);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        }
     }
 
     @Override
     public <T> T update(T entity) {
-        return entityManager.merge(entity);
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        try {
+            T updateable = entityManager.merge(entity);
+            transaction.commit();
+            return updateable;
+        } catch (Exception e) {
+            transaction.rollback();
+            return null;
+        }
     }
 
     @Override
     public <T> void createOrUpdate(T entity) {
-        ((Session) entityManager).saveOrUpdate(entity);
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        try {
+            ((Session) entityManager).saveOrUpdate(entity);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        }
     }
 
     @Override

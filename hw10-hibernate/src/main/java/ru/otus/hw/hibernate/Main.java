@@ -36,7 +36,7 @@ public class Main {
                 .phones(phones)
                 .build();
 
-        template.create(user_1);
+        template.createOrUpdate(user_1);
 
         Optional<User> userOptional = template.findById(1L, User.class);
         userOptional.ifPresent(System.out::println);

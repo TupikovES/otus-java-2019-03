@@ -2,6 +2,7 @@ package ru.otus.hw.hibernate.domain;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,8 +11,9 @@ import java.util.List;
 @Entity
 @Data
 @Builder
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "User")
-public class User {
+public class User extends AbstractEntity {
 
     @Id
     @GeneratedValue(generator = "increment")

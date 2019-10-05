@@ -1,5 +1,8 @@
 package ru.otus.hw.hibernate;
 
+import lombok.extern.slf4j.Slf4j;
+import ru.otus.hw.cache.core.CacheEngine;
+import ru.otus.hw.cache.core.CacheEngineImpl;
 import ru.otus.hw.hibernate.core.ConnectionManager;
 import ru.otus.hw.hibernate.core.H2ConnectionManager;
 import ru.otus.hw.hibernate.dao.JdbcTemplate;
@@ -7,18 +10,27 @@ import ru.otus.hw.hibernate.dao.JdbcTemplateImpl;
 import ru.otus.hw.hibernate.domain.Address;
 import ru.otus.hw.hibernate.domain.Phone;
 import ru.otus.hw.hibernate.domain.User;
+import ru.otus.hw.hibernate.service.UserService;
 
 import javax.persistence.EntityManager;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+
+        log.info("Starting...");
+
         ConnectionManager connectionManager = new H2ConnectionManager();
         EntityManager entityManager = connectionManager.getEntityManager();
         JdbcTemplate template = new JdbcTemplateImpl(entityManager);
+        CacheEngine<Long, User> cache = new CacheEngineImpl<>(2, 5_000, 10_000, false);
+
+        UserService userService = new UserService(template, cache);
 
         Phone phone_1 = Phone.builder().number("111-111-111").build();
         Phone phone_2 = Phone.builder().number("222-222-222").build();
@@ -36,17 +48,12 @@ public class Main {
                 .phones(phones)
                 .build();
 
-        template.createOrUpdate(user_1);
+        Long id = userService.save(user_1);
+        User cacheUser = userService.getById(id);
 
-        Optional<User> userOptional = template.findById(1L, User.class);
-        userOptional.ifPresent(System.out::println);
+        Thread.sleep(10_000);
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            Address address = user.getAddress();
-            address.setStreet("new_street");
-            template.update(user);
-            template.findById(1L, User.class).ifPresent(System.out::println);
-        }
+        User dbUser = userService.getById(id);
+
     }
 }

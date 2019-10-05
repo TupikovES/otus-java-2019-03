@@ -1,0 +1,4 @@
+17:58:43.034 [main] DEBUG r.otus.hw.cache.core.CacheEngineImpl - Put cache User(id=1, name=user_1, age=1, address=Address(id=1, street=street_1), phones=[Phone(id=1, number=111-111-111), Phone(id=2, number=222-222-222)]) by key 1
+17:58:43.049 [main] DEBUG r.otus.hw.cache.core.CacheEngineImpl - Get value from cache: User(id=1, name=user_1, age=1, address=Address(id=1, street=street_1), phones=[Phone(id=1, number=111-111-111), Phone(id=2, number=222-222-222)])
+17:58:48.034 [Timer-0] DEBUG r.otus.hw.cache.core.CacheEngineImpl - Remove element by key: 1
+17:58:53.049 [main] DEBUG r.otus.hw.cache.core.CacheEngineImpl - Missing element from cache, get value by function...

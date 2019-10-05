@@ -1,9 +1,11 @@
 package ru.otus.hw.hibernate.dao;
 
 import org.hibernate.Session;
+import ru.otus.hw.hibernate.domain.AbstractEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import java.io.Serializable;
 import java.util.Optional;
 
 public class JdbcTemplateImpl implements JdbcTemplate {
@@ -15,14 +17,16 @@ public class JdbcTemplateImpl implements JdbcTemplate {
     }
 
     @Override
-    public void create(Object entity) {
+    public <T extends AbstractEntity> Serializable create(T entity) {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         try {
             entityManager.persist(entity);
             transaction.commit();
+            return entity.getId();
         } catch (Exception e) {
             transaction.rollback();
+            return null;
         }
     }
 
@@ -41,14 +45,16 @@ public class JdbcTemplateImpl implements JdbcTemplate {
     }
 
     @Override
-    public <T> void createOrUpdate(T entity) {
+    public <T extends AbstractEntity> Serializable createOrUpdate(T entity) {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         try {
             ((Session) entityManager).saveOrUpdate(entity);
             transaction.commit();
+            return entity.getId();
         } catch (Exception e) {
             transaction.rollback();
+            return null;
         }
     }
 

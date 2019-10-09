@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User page</title>
+    <style>
+        * {
+            padding: 5px;
+        }
+        .add-user-form {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="add-user-form">
+    <label for="username">Username: </label>
+    <input id="username" type="text" name="username" />
+    <label for="age">Age: </label>
+    <input id="age" type="number" min="0" max="110" name="age"/>
+    <button type="button" onclick="addUser()">Add</button>
+</div>
+
+<div id="userList"></div>
+<script>
+    function loadAllUser() {
+        fetch("http://localhost:8080/users")
+            .then(value => value.json())
+            .then(value => {
+                let userList = document.getElementById("userList");
+                userList.innerHTML = "";
+                value.users.map(user => {
+                    let userItem = document.createElement("div");
+                    userItem.innerText = user.name + " " + user.age;
+                    userList.appendChild(userItem);
+                })
+            })
+            .catch(reason => {
+                console.error(JSON.stringify(reason));
+            })
+    }
+
+    function addUser() {
+        let user = {};
+        user.name = document.getElementById("username").value;
+        user.age = document.getElementById("age").value;
+
+        fetch("http://localhost:8080/users", {
+            body: JSON.stringify(user),
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        }).then(value => {
+            loadAllUser()
+        }).catch(reason => {
+            console.error(JSON.stringify(reason));
+        })
+    }
+
+    loadAllUser();
+</script>
+</body>
+</html>

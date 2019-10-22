@@ -51,33 +51,12 @@ public class WebApp {
 
         userService.save(user);
 
-        Server server = initialServer(userService);
+        Server server = ServerConfiguration.initialServer(userService);
         server.start();
         server.join();
     }
 
-    private static Server initialServer(UserService userService) throws IOException {
-        ServletContextHandler contextHandler = ServerConfiguration.createHandler(userService);
-        SecurityHandler securityHandler = ServerConfiguration.createSecurityHandler(contextHandler);
-        ResourceHandler resourceHandler = ServerConfiguration.createResourceHandler();
-        Server server = new Server(ServerConfiguration.PORT);
 
-        SessionHandler sessionHandler = new SessionHandler();
-        DefaultSessionCache defaultSessionCache = new DefaultSessionCache(sessionHandler);
-        defaultSessionCache.setSessionDataStore(new NullSessionDataStore());
-        sessionHandler.setSessionCache(defaultSessionCache);
-
-        contextHandler.setSessionHandler(sessionHandler);
-
-        server.setHandler(new HandlerList(contextHandler));
-
-        HandlerList handlerList = new HandlerList();
-        handlerList.setHandlers(new Handler[]{/*sessionHandler,*/ resourceHandler, securityHandler});
-
-        server.setHandler(handlerList);
-
-        return server;
-    }
 
     private static UserService createUserService(JdbcTemplate template) {
         CacheEngine<Long, User> cache = new CacheEngineImpl<>(2, 5_000, 10_000, false);

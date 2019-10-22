@@ -4,8 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.security.authentication.FormAuthenticator;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.server.session.DefaultSessionCache;
+import org.eclipse.jetty.server.session.NullSessionDataStore;
+import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -21,11 +26,34 @@ import java.util.Collections;
 @Slf4j
 public class ServerConfiguration {
 
-    public static final int PORT = 8080;
+    private static final int PORT = 8080;
     private static final String LOGIN_PAGE = "/login_page.html";
     private static final String ERROR_PAGE = LOGIN_PAGE + "?error=true";
 
-    public static ServletContextHandler createHandler(UserService userService) {
+    public static Server initialServer(UserService userService) {
+        ServletContextHandler contextHandler = ServerConfiguration.createHandler(userService);
+        SecurityHandler securityHandler = ServerConfiguration.createSecurityHandler(contextHandler);
+        ResourceHandler resourceHandler = ServerConfiguration.createResourceHandler();
+        Server server = new Server(ServerConfiguration.PORT);
+
+        SessionHandler sessionHandler = new SessionHandler();
+        DefaultSessionCache defaultSessionCache = new DefaultSessionCache(sessionHandler);
+        defaultSessionCache.setSessionDataStore(new NullSessionDataStore());
+        sessionHandler.setSessionCache(defaultSessionCache);
+
+        contextHandler.setSessionHandler(sessionHandler);
+
+        server.setHandler(new HandlerList(contextHandler));
+
+        HandlerList handlerList = new HandlerList();
+        handlerList.setHandlers(new Handler[]{/*sessionHandler,*/ resourceHandler, securityHandler});
+
+        server.setHandler(handlerList);
+
+        return server;
+    }
+
+    private static ServletContextHandler createHandler(UserService userService) {
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
         contextHandler.addServlet(new ServletHolder(new UserServlet(userService)), "/users");
@@ -34,7 +62,7 @@ public class ServerConfiguration {
         return contextHandler;
     }
 
-    public static SecurityHandler createSecurityHandler(ServletContextHandler contextHandler) throws IOException {
+    private static SecurityHandler createSecurityHandler(ServletContextHandler contextHandler) {
         Constraint constraint = new Constraint();
         constraint.setName("auth");
         constraint.setAuthenticate(true);
@@ -62,7 +90,7 @@ public class ServerConfiguration {
         return securityHandler;
     }
 
-    public static ResourceHandler createResourceHandler() {
+    private static ResourceHandler createResourceHandler() {
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(false);
 //        resourceHandler.setWelcomeFiles(new String[]{"index.html"});

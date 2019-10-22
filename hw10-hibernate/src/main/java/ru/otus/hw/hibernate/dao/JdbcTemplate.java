@@ -2,10 +2,14 @@ package ru.otus.hw.hibernate.dao;
 
 import ru.otus.hw.hibernate.domain.AbstractEntity;
 
+import javax.persistence.EntityManager;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 public interface JdbcTemplate {
+
+    EntityManager getEntityManager();
 
     <T extends AbstractEntity> Serializable create(T entity);
 

@@ -32,6 +32,7 @@
         <module>hw9-orm</module>
         <module>hw10-hibernate</module>
         <module>hw11-cache</module>
+        <module>hw12-webserver</module>
     </modules>
 
     <properties>
@@ -55,6 +56,9 @@
         <logback.version>1.2.3</logback.version>
         <hibernate.version>5.4.4.Final</hibernate.version>
         <cache-api.version>1.1.0</cache-api.version>
+        <jetty-server.version>10.0.0-alpha0</jetty-server.version>
+        <jetty-webapp-logging.version>9.4.20.v20190813</jetty-webapp-logging.version>
+        <jackson-databind.version>2.10.0.pr3</jackson-databind.version>
     </properties>
 
     <dependencyManagement>
@@ -111,6 +115,34 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
+            </dependency>
+
+            <!-- Jetty -->
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-security</artifactId>
+                <version>${jetty-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp</artifactId>
+                <version>${jetty-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp-logging</artifactId>
+                <version>${jetty-webapp-logging.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-databind.version}</version>
             </dependency>
 
 

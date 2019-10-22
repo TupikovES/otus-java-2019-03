@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        .input-block {
+            margin-bottom: 5px;
+        }
+
+        .error-color {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+<form method="POST" action="j_security_check">
+    <div>
+        <div class="input-block">
+            <label for="username">Username:</label>
+            <input id="username" size="12" value="" name="j_username" maxlength="25" type="text">
+        </div>
+        <div class="input-block">
+            <label for="password">Password:</label>
+            <input id="password" size="12" value="" name="j_password" maxlength="25" type="password">
+        </div>
+        <div class="input-block">
+            <input name="submit" type="submit" value="Login">
+        </div>
+        <div id="errorMessage" class="error-color"></div>
+    </div>
+
+</form>
+<script>
+    const url = new URL(window.location.href);
+    const isError = url.searchParams.get("error");
+    const errorMsg = window.document.getElementById("errorMessage");
+    if (isError) {
+        errorMsg.innerText = "Login or password incorrect";
+    } else {
+        errorMsg.innerText = "";
+    }
+</script>
+</body>
+</html>

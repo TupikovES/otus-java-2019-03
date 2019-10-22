@@ -6,6 +6,7 @@ import ru.otus.hw.hibernate.domain.AbstractEntity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 public class JdbcTemplateImpl implements JdbcTemplate {
@@ -14,6 +15,11 @@ public class JdbcTemplateImpl implements JdbcTemplate {
 
     public JdbcTemplateImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    @Override
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 
     @Override

@@ -33,6 +33,7 @@
         <module>hw10-hibernate</module>
         <module>hw11-cache</module>
         <module>hw12-webserver</module>
+        <module>hw13-spring</module>
     </modules>
 
     <properties>
@@ -59,6 +60,10 @@
         <jetty-server.version>10.0.0-alpha0</jetty-server.version>
         <jetty-webapp-logging.version>9.4.20.v20190813</jetty-webapp-logging.version>
         <jackson-databind.version>2.10.0.pr3</jackson-databind.version>
+        <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
+        <spring.version>5.1.9.RELEASE</spring.version>
+        <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
+        <javaee-web-api.version>8.0.1</javaee-web-api.version>
     </properties>
 
     <dependencyManagement>
@@ -115,6 +120,33 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-web-api</artifactId>
+                <version>${javaee-web-api.version}</version>
             </dependency>
 
             <!-- Jetty -->
@@ -194,6 +226,11 @@
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>${maven-failsafe-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven-war-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

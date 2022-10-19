@@ -58,7 +58,7 @@
         <cache-api.version>1.1.0</cache-api.version>
         <jetty-server.version>10.0.0-alpha0</jetty-server.version>
         <jetty-webapp-logging.version>9.4.20.v20190813</jetty-webapp-logging.version>
-        <jackson-databind.version>2.10.0.pr3</jackson-databind.version>
+        <jackson-databind.version>2.13.4.1</jackson-databind.version>
     </properties>
 
     <dependencyManagement>
